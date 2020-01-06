@@ -16,11 +16,6 @@ export default {
   components: {
     Tile,
   },
-  created() {
-    for (var r = 0; r < this.rows; r++) {
-      this.board[r] = [];
-    }
-  },
   mounted() {
     this.spawnTile();
     this.spawnTile();
@@ -30,12 +25,16 @@ export default {
           this.spawnTile();
           break;
         case 'ArrowUp':
+          this.move('Up');
           break;
         case 'ArrowDown':
+          this.move('Down');
           break;
         case 'ArrowLeft':
+          this.move('Left');
           break;
         case 'ArrowRight':
+          this.move('Right');
           break;
       }
     });
@@ -153,6 +152,128 @@ export default {
       }
 
       this.placeTile(space.row, space.col, value);
+    },
+    moveVertTile: function(r, c, dir) {
+      if (!this.board[r] || !this.board[r][c]) {
+        return;
+      }
+
+      for (var r2 = r; (r2 + dir) >= 0 && (r2 + dir) < this.rows; r2 += dir)
+      {
+        if (this.board[r2 + dir] && this.board[r2 + dir][c])
+        {
+          break;
+        }
+      }
+
+      if (this.board[r2 + dir] && this.board[r2 + dir][c] &&
+          this.board[r2 + dir][c].val == this.board[r][c].val)
+      {
+        this.board[r2 + dir][c].key = this.board[r][c].key;
+        this.board[r2 + dir][c].val *= 2;
+        this.board[r][c] = null;
+        return;
+      }
+
+      if (r2 == r) {
+        return;
+      }
+
+      if (!this.board[r2]) {
+        this.board[r2] = [];
+      }
+
+      this.board[r2][c] = this.board[r][c];
+      this.board[r][c] = null;
+    },
+    moveVertRow: function(r, dir) {
+      if (!this.board[r]) {
+        return;
+      }
+
+      for (var c = 0; c < this.cols; c++) {
+        this.moveVertTile(r, c, dir);
+      }
+    },
+    moveVert: function(dir) {
+      var r = 1;
+      if (dir < 0) {
+        for (r = 1; r < this.rows; r++) {
+          this.moveVertRow(r, dir);
+        }
+      } else if (dir > 0) {
+        for (r = this.rows - 2; r >= 0; r--) {
+          this.moveVertRow(r, dir);
+        }
+      }
+
+      this.tiles = this.getTiles();
+    },
+    moveHorizTile: function(r, c, dir) {
+      if (!this.board[r] || !this.board[r][c]) {
+        return;
+      }
+
+      for (var c2 = c; (c2 + dir) >= 0 && (c2 + dir) < this.cols; c2 += dir)
+      {
+        if (this.board[r][c2 + dir])
+        {
+          break;
+        }
+      }
+
+      if (this.board[r][c2 + dir] &&
+          this.board[r][c2 + dir].val == this.board[r][c].val)
+      {
+        this.board[r][c2 + dir].key = this.board[r][c].key;
+        this.board[r][c2 + dir].val *= 2;
+        this.board[r][c] = null;
+        return;
+      }
+
+      if (c2 == c) {
+        return;
+      }
+
+      this.board[r][c2] = this.board[r][c];
+      this.board[r][c] = null;
+    },
+    moveHorizCol: function(c, dir) {
+      for (var r = 0; r < this.rows; r++) {
+        if (!this.board[r]) {
+          continue;
+        }
+        this.moveHorizTile(r, c, dir)
+      }
+    },
+    moveHoriz: function(dir) {
+      var c = 1;
+      if (dir < 0) {
+        for (c = 1; c < this.cols; c++) {
+          this.moveHorizCol(c, dir);
+        }
+      } else if (dir > 0) {
+        for (c = this.cols - 2; c >= 0; c--) {
+          this.moveHorizCol(c, dir);
+        }
+      }
+    },
+    move: function(dir) {
+      switch(dir) {
+        case 'Up':
+          this.moveVert(-1);
+          break;
+        case 'Down':
+          this.moveVert(1);
+          break;
+        case 'Left':
+          this.moveHoriz(-1);
+          break;
+        case 'Right':
+          this.moveHoriz(1);
+          break;
+      }
+      this.spawnTile();
     },
   },
 }

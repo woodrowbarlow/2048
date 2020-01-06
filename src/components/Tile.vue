@@ -24,24 +24,28 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@keyframes pop-in {
+@keyframes pop {
   0% {
     transform: scale(0);
   }
-  50% {
-    transform: scale(1.5);
+  75% {
+    transform: scale(1.25);
   }
   100% {
     transform: scale(1);
   }
 }
 
-.pop-enter-active {
-  animation: pop-in .5s;
+.tile.pop-enter {
+  transform: scale(0);
 }
 
-.pop-leave-active {
-  animation: pop-in .5s reverse;
+.tile.pop-enter-active {
+  animation: pop .5s;
+}
+
+.tile.pop-leave-active {
+  animation: pop .5s reverse;
 }
 
 .tile {
@@ -51,6 +55,7 @@ export default {
   border-radius: 3px;
   font-family: sans-serif;
   font-weight: bold;
+  transition: transform 0.5s ease;
 }
 
 .tile::before {
