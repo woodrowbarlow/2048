@@ -24,30 +24,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-@keyframes pop {
-  0% {
-    transform: scale(0);
-  }
-  75% {
-    transform: scale(1.25);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.tile.pop-enter {
-  transform: scale(0);
-}
-
-.tile.pop-enter-active {
-  animation: pop .5s;
-}
-
-.tile.pop-leave-active {
-  animation: pop .5s reverse;
-}
-
 .tile {
   display: grid;
   grid-row: var(--row);
@@ -55,7 +31,6 @@ export default {
   border-radius: 3px;
   font-family: sans-serif;
   font-weight: bold;
-  transition: transform 0.5s ease;
 }
 
 .tile::before {

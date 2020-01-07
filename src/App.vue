@@ -1,19 +1,21 @@
 <template>
-  <transition-group name="pop" id="app" tag="div" :style="style">
-    <Tile v-for="tile in tiles"
+  <tile-transition-group id="app" tag="div" :style="style">
+    <tile v-for="tile in tiles"
           :key="tile.key"
           :row="tile.row"
           :col="tile.col"
           :val="tile.val" />
-  </transition-group>
+  </tile-transition-group>
 </template>
 
 <script>
+import TileTransitionGroup from './components/TileTransitionGroup.vue'
 import Tile from './components/Tile.vue'
 
 export default {
   name: 'app',
   components: {
+    TileTransitionGroup,
     Tile,
   },
   mounted() {
@@ -21,9 +23,6 @@ export default {
     this.spawnTile();
     window.addEventListener('keydown', (e) => {
       switch (e.code) {
-        case 'Space':
-          this.spawnTile();
-          break;
         case 'ArrowUp':
           this.move('Up');
           break;
@@ -44,12 +43,7 @@ export default {
       rows: 4,
       cols: 4,
       dropRates: [
-        0.3,  // chance of getting a '4'.
-        0.1,  // chance of getting an '8'.
-        // the next entry would be the chance of getting a '16'.
-        // (and so on from there.)
-        // anything not in the list has a 0% chance (except '2').
-        // any leftover chance is the chance of getting a '2'.
+        0.1, // chance of getting a '4'
       ],
       board: [],
       tiles: [],
